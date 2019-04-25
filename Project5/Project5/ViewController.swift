@@ -38,7 +38,6 @@ class ViewController: UITableViewController {
         title = allWords.randomElement()
         usedWords.removeAll(keepingCapacity: true)
         tableView.reloadData()
-        print("there are: \(allWords.count) words in the allWords array")
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -118,6 +117,14 @@ class ViewController: UITableViewController {
     }
     
     func isReal(word: String) -> Bool {
+        guard var tempWord = title?.lowercased() else { return false }
+        
+        if word.utf16.count < 3 {
+            return 1 == 2
+        } else if (word == tempWord) {
+            return 1 == 2
+        }
+        
         let checker = UITextChecker()
         let range = NSRange(location: 0, length: word.utf16.count)
         let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
