@@ -67,9 +67,6 @@ class ViewController: UITableViewController {
     func submit(_ answer: String) {
         let lowerAnswer = answer.lowercased()
         
-        let errorTitle: String
-        let errorMessage: String
-        
         if isPossible(word: lowerAnswer) {
             if isOriginal(word: lowerAnswer) {
                 if isReal(word: lowerAnswer) {
@@ -80,22 +77,15 @@ class ViewController: UITableViewController {
                     
                     return
                 } else {
-                    errorTitle = "Word not recognised"
-                    errorMessage = "You can't just make them up"
+                    showErrorMessage(error: "Word not recognised", message: "You can't just make them up" )
                 }
             } else {
-                errorTitle = "Word already used"
-                errorMessage = "You can't use the same word"
+                showErrorMessage(error: "Word already used", message: "You can't just use the same word" )
             }
         } else {
             guard let title = title else { return }
-            errorTitle = "Word not possible"
-            errorMessage = "You can't spell \(lowerAnswer) from \(title.lowercased())"
+            showErrorMessage(error: "Word not possible", message: "You can't spell \(lowerAnswer) from \(title.lowercased())" )
         }
-        
-        let ac = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "OK", style: .default))
-        present(ac, animated: true)
     }
     
     func isPossible(word: String) -> Bool {
@@ -120,8 +110,10 @@ class ViewController: UITableViewController {
         guard var tempWord = title?.lowercased() else { return false }
         
         if word.utf16.count < 3 {
+            showErrorMessage(error: "error!", message: "too short!")
             return 1 == 2
         } else if (word == tempWord) {
+            showErrorMessage(error: "Come on!", message: "We gave you this word - find your own")
             return 1 == 2
         }
         
@@ -129,6 +121,14 @@ class ViewController: UITableViewController {
         let range = NSRange(location: 0, length: word.utf16.count)
         let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
         return misspelledRange.location == NSNotFound
+    }
+    
+    func showErrorMessage(error: String, message: String) {
+        
+        let ac = UIAlertController(title: error, message: message, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        present(ac, animated: true)
+        
     }
     
     @objc func restart() {
