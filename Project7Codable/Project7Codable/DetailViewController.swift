@@ -16,6 +16,7 @@ class DetailViewController: UIViewController {
     override func loadView() {
         webView = WKWebView()
         view = webView
+        title = detailItem?.title
     }
 
     override func viewDidLoad() {
