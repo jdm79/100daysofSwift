@@ -14,6 +14,13 @@ class DetailViewController: UIViewController {
     var detailItem: Petition?
     
     override func loadView() {
+//        
+//        let attrs = [
+//            NSAttributedString.Key.foregroundColor: UIColor.red,
+//            NSAttributedString.Key.font: UIFont(name: "Georgia-Bold", size: 10)!
+//        ]
+//        
+//        UINavigationBar.appearance().titleTextAttributes = attrs
         webView = WKWebView()
         view = webView
         title = detailItem?.title

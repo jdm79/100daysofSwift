@@ -19,6 +19,8 @@ class ViewController: UITableViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(reload))
     
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showCredits))
+
         fetchData()
     }
     
@@ -81,6 +83,23 @@ class ViewController: UITableViewController {
         fetchData()
         let message = "Fetching latest petitions"
         let ac = UIAlertController(title: "New Fetch Call", message: message, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        present(ac, animated: true)
+        tableView.reloadData()
+    }
+    
+    @objc func showCredits() {
+        var urlString: String?
+        
+        if navigationController?.tabBarItem.tag == 0 {
+            urlString = "https://api.whitehouse.gov/v1/petitions.json?limit=100"
+            //            urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
+        } else {
+            //            urlString = "https://api.whitehouse.gov/v1/petitins.json?signatureCountFloor=10000&limit=100"
+            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
+        }
+        let message = urlString!
+        let ac = UIAlertController(title: "Data Source:", message: message, preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default))
         present(ac, animated: true)
         tableView.reloadData()
