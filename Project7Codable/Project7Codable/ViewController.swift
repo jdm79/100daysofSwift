@@ -35,7 +35,7 @@ class ViewController: UITableViewController {
             urlString = "https://api.whitehouse.gov/v1/petitions.json?limit=\(limit)"
 //            urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
         } else {
-            urlString = "https://api.whitehouse.gov/v1/petitins.json?signatureCountFloor=10000&limit=\(limit)"
+            urlString = "https://api.whitehouse.gov/v1/petitions.json?signatureCountFloor=10000&limit=\(limit)"
 //            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
         }
         
@@ -94,11 +94,13 @@ class ViewController: UITableViewController {
     @objc func showCredits() {
         var urlString: String?
         
+        let currentLimit = limit
+        
         if navigationController?.tabBarItem.tag == 0 {
-            urlString = "https://api.whitehouse.gov/v1/petitions.json?limit=\(limit)"
+            urlString = "https://api.whitehouse.gov/v1/petitions.json?limit=\(currentLimit)"
 //            urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
         } else {
-            urlString = "https://api.whitehouse.gov/v1/petitions.json?signatureCountFloor=10000&limit=\(limit)"
+            urlString = "https://api.whitehouse.gov/v1/petitions.json?signatureCountFloor=10000&limit=\(currentLimit)"
 //            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
         }
         let message = urlString!
