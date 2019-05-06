@@ -82,6 +82,7 @@ class ViewController: UITableViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
+  
     @objc func reload() {
         fetchData(limit)
         let message = "Fetching latest petitions"
@@ -130,14 +131,5 @@ class ViewController: UITableViewController {
         print(limit)
     }
     
-//    @objc func setLimit() {
-//        let message = "10?"
-//        let ac = UIAlertController(title: "Choose limit:", message: message, preferredStyle: .alert)
-//        ac.addAction(UIAlertAction(title: "OK", style: .default))
-//        limit = 10
-//        present(ac, animated: true)
-//        fetchData()
-//        tableView.reloadData()
-//    }
 }
 
