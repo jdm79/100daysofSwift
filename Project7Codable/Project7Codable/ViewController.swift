@@ -22,31 +22,26 @@ class ViewController: UITableViewController {
     
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showCredits))
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(setLimit))
-
-        fetchData(limit)
-    }
-    
-    func fetchData(_ limit: String) {
-        
         let urlString: String
-
+        
         if navigationController?.tabBarItem.tag == 0 {
             urlString = "https://api.whitehouse.gov/v1/petitions.json?limit=\(limit)"
-//            urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
+            //            urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
         } else {
             urlString = "https://api.whitehouse.gov/v1/petitions.json?signatureCountFloor=10000&limit=\(limit)"
-//            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
+            //            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
         }
-        
-        if let url = URL(string: urlString) {
-            if let data = try? Data(contentsOf: url) {
-                parse(json: data)
-                return
+        DispatchQueue.global(qos: .userInitiated).async {
+            [weak self] in
+            if let url = URL(string: urlString) {
+                if let data = try? Data(contentsOf: url) {
+                    self?.parse(json: data)
+                    return
+                }
             }
         }
-        showError()
     }
+    
     
     func showError() {
         let message = "There was a problem loading the feed; please check your connection and try again"
@@ -82,15 +77,6 @@ class ViewController: UITableViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-  
-    @objc func reload() {
-        fetchData(limit)
-        let message = "Fetching latest petitions"
-        let ac = UIAlertController(title: "New Fetch Call", message: message, preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "OK", style: .default))
-        present(ac, animated: true)
-        tableView.reloadData()
-    }
     
     @objc func showCredits() {
         var urlString: String?
@@ -110,26 +96,5 @@ class ViewController: UITableViewController {
         present(ac, animated: true)
         tableView.reloadData()
     }
-    
-    @objc func setLimit() {
-        let ac = UIAlertController(title: "Set a limit:", message: nil, preferredStyle: .alert)
-        ac.addTextField()
-        
-        let submitAction = UIAlertAction(title: "Filter", style: .default) {
-            [weak self, weak ac] _ in
-            guard let answer = ac?.textFields?[0].text else { return }
-            self?.submit(answer)
-        }
-        
-        ac.addAction(submitAction)
-        present(ac, animated: true)
-    }
-    
-    func submit(_ limit: String) {
-        
-        fetchData(limit)
-        print(limit)
-    }
-    
 }
 
