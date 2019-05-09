@@ -18,10 +18,10 @@ class ViewController: UITableViewController {
         
         title = "Petitions App"
         
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(reload))
+        performSelector(inBackground: #selector(fetchJSON), with: nil)
+    }
     
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showCredits))
-
+    @objc func fetchJSON() {
         let urlString: String
         
         if navigationController?.tabBarItem.tag == 0 {
@@ -31,27 +31,22 @@ class ViewController: UITableViewController {
             urlString = "https://api.whitehouse.gov/v1/petitions.json?signatureCountFloor=10000&limit=\(limit)"
             //            urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
         }
-        DispatchQueue.global(qos: .userInitiated).async {
-            [weak self] in
-            if let url = URL(string: urlString) {
-                if let data = try? Data(contentsOf: url) {
-                    self?.parse(json: data)
-                    return
-                }
+        
+        if let url = URL(string: urlString) {
+            if let data = try? Data(contentsOf: url) {
+                parse(json: data)
+                return
             }
-            self?.showError()
         }
+        performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
     }
     
     
-    func showError() {
-        DispatchQueue.main.async {
-            [weak self] in
-            let message = "There was a problem loading the feed; please check your connection and try again"
-            let ac = UIAlertController(title: "Loading Error", message: message, preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default))
-            self?.present(ac, animated: true)
-        }
+    @objc func showError() {
+        let message = "There was a problem loading the feed; please check your connection and try again"
+        let ac = UIAlertController(title: "Loading Error", message: message, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        present(ac, animated: true)
     }
     
     func parse(json: Data) {
@@ -59,10 +54,9 @@ class ViewController: UITableViewController {
         
         if let jsonPetitions = try? decoder.decode(Petitions.self, from: json) {
             petitions = jsonPetitions.results
-            DispatchQueue.main.async {
-                [weak self] in
-                self?.tableView.reloadData()
-            }
+            tableView.performSelector(onMainThread: #selector(UITableView.reloadData), with: nil, waitUntilDone: false)
+        } else {
+            performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
         }
     }
     
